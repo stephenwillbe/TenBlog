@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.2</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" th:href="@{/admin/css/font.css}">
+    <link rel="stylesheet" th:href="@{/admin/css/xadmin.css}">
+    <script th:src="@{/admin/lib/layui/layui.js}" charset="utf-8"></script>
+    <script type="text/javascript" th:src="@{/admin/js/xadmin.js}"></script>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div class="x-nav">
+          <span class="layui-breadcrumb">
+            <a href="">首页</a>
+            <a href="">文章管理</a>
+            <a>
+              <cite>文章列表</cite></a>
+          </span>
+    <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" onclick="location.reload()" title="刷新">
+        <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i></a>
+</div>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body ">
+                    <form class="layui-form layui-col-space5">
+
+                        <div class="layui-inline layui-show-xs-block">
+                            <input type="text" name="articleTitle"  placeholder="请输入相关信息" autocomplete="off" class="layui-input">
+                        </div>
+                        <div class="layui-inline layui-show-xs-block">
+                            <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-card-body ">
+                    <table class="layui-hide" id="article-table" lay-filter="test">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--页面底部-->
+<div th:replace="~{commons/foot :: footBar}"></div>
+</body>
+<!--//标题可点击，跳转到查看文章页面-->
+<script type="text/html" id="hrefDemo">
+    <a href="##" class="layui-table-link">{{d.articleTitle}}</a>
+</script>
+<!--//是否开启评论，根据当前行的id进行变化-->
+<script type="text/html" id="allowDemo">
+    {{#  if(d.articleAllowComment > 0){ }}
+    <button class="layui-btn layui-btn-sm layui-btn-normal" onclick="uptComment({{d.articleId}},0)">可评论</button>
+    {{#  } else { }}
+    <button class="layui-btn layui-btn-sm layui-btn-danger" onclick="uptComment({{d.articleId}},1)">不可评论</button>
+    {{#  } }}
+
+</script>
+<!--//文章的发布状态-->
+<script type="text/html" id="statusDemo">
+    {{#  if(d.articleStatus > 0){ }}
+    <button class="layui-btn layui-btn-sm layui-btn-normal" onclick="uptStatus({{d.articleId}},0)">已发布</button>
+    {{#  } else { }}
+    <button class="layui-btn layui-btn-sm layui-btn-danger" onclick="uptStatus({{d.articleId}},1)">待发布</button>
+    {{#  } }}
+</script>
+<!--//操作按钮-->
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<script type="text/javascript"  >
+    //初始化表格
+    layui.use('table',function () {
+        var table = layui.table;
+        table.render({
+            elem:'#article-table'
+            , url:'/article/list'
+            ,parseData:function (result) {
+                return{
+                    "code":0
+                    ,"msg":""
+                    ,"count":100
+                    ,"data":result
+                }
+            }
+            ,cols:[
+                [
+                    {field:'articleTitle', title:'文章标题' ,templet:'#hrefDemo',width:'30%',align:'center' }
+                    ,{field:'articleViews', title:'浏览量',sort: true,width:'7%',align:'center' }
+                    ,{field:'articleLikeCount', title:'点赞数',  sort: true,width:'7%',align:'center'}
+                    ,{field:'articleDate', title:'发布时间',sort: true ,width:'23%',align:'center'}
+                    ,{field:'articleAllowComment', title:'开启评论',templet: '#allowDemo',width:'8%',align:'center'}
+                    ,{field:'articleStatus',title:'状态' ,templet: '#statusDemo',width:'8%',align:'center'}
+                    ,{ title:'操作', toolbar: '#barDemo',align:'center'}
+                ]
+            ]
+            ,page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
+                layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+                //,curr: 5 //设定初始在第 5 页
+                ,groups: 1 //只显示 1 个连续页码
+                ,first: false //不显示首页
+                ,last: false //不显示尾页
+            }
+        })
+
+        //监听表格工具条
+        table.on('tool(test)',function (obj) {//注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data
+            if(obj.event === 'del'){
+                member_del(this,data);
+            }else if (obj.event === 'edit'){
+                xadmin.open('修改','/article/toEdit/'+data.articleId);
+            }
+        })
+    })
+
+    //删除文章
+    function member_del(obj,data) {
+        layer.confirm('确认要删除吗？', function (index) {
+            //发异步删除数据
+            $.get('/article/delete', {"articleId": data.articleId}, function (msg) {
+                console.log(msg)
+                if (msg == "failure") {
+                    layer.msg('删除失败!', {icon: 2, time: 1000});
+                    //对窗口进行刷新
+                    xadmin.father_reload();
+                } else {
+                    $(obj).parents("tr").remove();
+                    layer.msg('已删除!', {icon: 1, time: 1000});
+                    //对窗口进行刷新
+                    xadmin.father_reload();
+                }
+            })
+        })
+
+    }
+    //修改文章发布状态
+    function uptStatus(artId,status){
+        layer.confirm('确认要修改吗？', function (index) {
+            //发异步删除数据
+            $.get('/article/update', {"articleId": artId,"articleStatus":status}, function (msg) {
+                console.log(msg)
+                if (msg == "failure") {
+                    layer.msg('修改失败!', {icon: 2, time: 1000});
+                    //对窗口进行刷新
+                    xadmin.father_reload();
+                } else {
+                    layer.msg('修改成功!', {icon: 1, time: 1000});
+                    //对窗口进行刷新
+                    xadmin.father_reload();
+                }
+            })
+        })
+    }
+    //修改文章是否可以评论
+    function uptComment(artId,aComment){
+        layer.confirm('确认要修改吗？', function (index) {
+            //发异步删除数据
+            $.get('/article/update', {"articleId": artId,"articleAllowComment":aComment}, function (msg) {
+                console.log(msg)
+                if (msg == "failure") {
+                    layer.msg('修改失败!', {icon: 2, time: 1000});
+                    //对窗口进行刷新
+                    xadmin.father_reload();
+                } else {
+                    layer.msg('修改成功!', {icon: 1, time: 1000});
+                    //对窗口进行刷新
+                    xadmin.father_reload();
+                }
+            })
+        })
+    }
+</script>
+</html>

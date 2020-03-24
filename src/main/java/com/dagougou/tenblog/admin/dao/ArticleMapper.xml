@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dagougou.tenblog.admin.dao.ArticleMapper" >
+  <resultMap id="BaseResultMap" type="com.dagougou.tenblog.admin.entity.Article" >
+    <id column="article_id" property="articleId" jdbcType="BIGINT" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="article_views" property="articleViews" jdbcType="BIGINT" />
+    <result column="article_comment_count" property="articleCommentCount" jdbcType="BIGINT" />
+    <result column="article_date" property="articleDate" jdbcType="TIMESTAMP" />
+    <result column="article_like_count" property="articleLikeCount" jdbcType="BIGINT" />
+    <result column="article_title" property="articleTitle" jdbcType="LONGVARCHAR" />
+    <result column="article_html_content" property="articleHtmlContent" jdbcType="LONGVARCHAR" />
+    <result column="article_md_content" property="articleMdContent" jdbcType="LONGVARCHAR" />
+    <result column="article_status" property="articleStatus" jdbcType="TINYINT" />
+    <result column="article_allow_comment" property="articleAllowComment" jdbcType="TINYINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    article_id, user_id, article_views, article_comment_count, article_date, article_like_count ,article_title, article_html_content,article_status,article_allow_comment,article_md_content
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from zj_articles
+    where article_id = #{articleId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from zj_articles
+    where article_id = #{articleId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.dagougou.tenblog.admin.entity.Article" >
+    insert into zj_articles (article_id, user_id, article_views, 
+      article_comment_count, article_date, article_like_count, 
+      article_title, article_html_content)
+    values (#{articleId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{articleViews,jdbcType=BIGINT}, 
+      #{articleCommentCount,jdbcType=BIGINT}, #{articleDate,jdbcType=TIMESTAMP}, #{articleLikeCount,jdbcType=BIGINT}, 
+      #{articleTitle,jdbcType=LONGVARCHAR}, #{articleHtmlContent,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="articleId" parameterType="com.dagougou.tenblog.admin.entity.Article" >
+    insert into zj_articles
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="articleViews != null" >
+        article_views,
+      </if>
+      <if test="articleCommentCount != null" >
+        article_comment_count,
+      </if>
+      <if test="articleDate != null" >
+        article_date,
+      </if>
+      <if test="articleLikeCount != null" >
+        article_like_count,
+      </if>
+      <if test="articleTitle != null" >
+        article_title,
+      </if>
+      <if test="articleHtmlContent != null" >
+        article_html_content,
+      </if>
+      <if test="articleMdContent != null" >
+        article_md_content,
+      </if>
+      <if test="articleStatus != null" >
+        article_status,
+      </if>
+      <if test="articleAllowComment != null" >
+        article_allow_comment,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="articleId != null" >
+        #{articleId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="articleViews != null" >
+        #{articleViews,jdbcType=BIGINT},
+      </if>
+      <if test="articleCommentCount != null" >
+        #{articleCommentCount,jdbcType=BIGINT},
+      </if>
+      <if test="articleDate != null" >
+        #{articleDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="articleLikeCount != null" >
+        #{articleLikeCount,jdbcType=BIGINT},
+      </if>
+      <if test="articleTitle != null" >
+        #{articleTitle,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="articleHtmlContent != null" >
+        #{articleHtmlContent,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="articleMdContent != null" >
+        #{articleMdContent,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="articleStatus != null" >
+        #{articleStatus,jdbcType=TINYINT},
+      </if>
+      <if test="articleAllowComment != null" >
+        #{articleAllowComment,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dagougou.tenblog.admin.entity.Article"  >
+    update zj_articles
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="articleViews != null" >
+        article_views = #{articleViews,jdbcType=BIGINT},
+      </if>
+      <if test="articleCommentCount != null" >
+        article_comment_count = #{articleCommentCount,jdbcType=BIGINT},
+      </if>
+      <if test="articleDate != null" >
+        article_date = #{articleDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="articleLikeCount != null" >
+        article_like_count = #{articleLikeCount,jdbcType=BIGINT},
+      </if>
+      <if test="articleTitle != null" >
+        article_title = #{articleTitle,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="articleHtmlContent != null" >
+        article_html_content = #{articleHtmlContent,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="articleMdContent != null" >
+        article_md_content = #{articleMdContent,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="articleStatus != null" >
+      article_status = #{articleStatus,jdbcType=TINYINT},
+    </if>
+      <if test="articleAllowComment != null" >
+        article_allow_comment = #{articleAllowComment,jdbcType=TINYINT},
+      </if>
+    </set>
+    where article_id = #{articleId,jdbcType=BIGINT}
+  </update>
+
+
+  <select id="findAll" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from zj_articles
+  </select>
+
+
+</mapper>

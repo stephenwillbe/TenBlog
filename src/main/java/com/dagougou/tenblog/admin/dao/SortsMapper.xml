@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dagougou.tenblog.admin.dao.SortsMapper" >
+  <resultMap id="BaseResultMap" type="com.dagougou.tenblog.admin.entity.Sorts" >
+    <id column="sort_id" property="sortId" jdbcType="BIGINT" />
+    <result column="sort_name" property="sortName" jdbcType="VARCHAR" />
+    <result column="parent_id" property="parentId" jdbcType="BIGINT" />
+    <result column="sort_state" property="sortState" jdbcType="INTEGER" />
+    <result column="sort_description" property="sortDescription" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    sort_id, sort_name, parent_id, sort_state , sort_description
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from zj_sorts
+    where sort_id = #{sortId,jdbcType=BIGINT}
+  </select>
+
+  <select id="getSortsByParentId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+    select
+    <include refid="Base_Column_List" />
+    from zj_sorts
+    where parent_id = #{parentId}
+  </select>
+
+  <select id="getSortsByState" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from zj_sorts
+    where sort_state = 0
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from zj_sorts
+    where sort_id = #{sortId,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" parameterType="com.dagougou.tenblog.admin.entity.Sorts" >
+    insert into zj_sorts (sort_id, sort_name, parent_id, 
+      sort_state, sort_description)
+    values (#{sortId,jdbcType=BIGINT}, #{sortName,jdbcType=VARCHAR}, #{parentId,jdbcType=BIGINT}, 
+      #{sortState,jdbcType=INTEGER}, #{sortDescription,jdbcType=LONGVARCHAR})
+  </insert>
+
+  <insert id="insertSelective" parameterType="com.dagougou.tenblog.admin.entity.Sorts" >
+    insert into zj_sorts
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="sortId != null" >
+        sort_id,
+      </if>
+      <if test="sortName != null" >
+        sort_name,
+      </if>
+      <if test="parentId != null" >
+        parent_id,
+      </if>
+      <if test="sortState != null" >
+        sort_state,
+      </if>
+      <if test="sortDescription != null" >
+        sort_description,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="sortId != null" >
+        #{sortId,jdbcType=BIGINT},
+      </if>
+      <if test="sortName != null" >
+        #{sortName,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null" >
+        #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="sortState != null" >
+        #{sortState,jdbcType=INTEGER},
+      </if>
+      <if test="sortDescription != null" >
+        #{sortDescription,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.dagougou.tenblog.admin.entity.Sorts" >
+    update zj_sorts
+    <set >
+      <if test="sortName != null" >
+        sort_name = #{sortName,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null" >
+        parent_id = #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="sortState != null" >
+        sort_state = #{sortState,jdbcType=INTEGER},
+      </if>
+      <if test="sortDescription != null" >
+        sort_description = #{sortDescription,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where sort_id = #{sortId,jdbcType=BIGINT}
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="com.dagougou.tenblog.admin.entity.Sorts" >
+    update zj_sorts
+    set sort_name = #{sortName,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=BIGINT},
+      sort_state = #{sortState,jdbcType=INTEGER}
+    where sort_id = #{sortId,jdbcType=BIGINT}
+  </update>
+
+  <select id="getSortByArtId" parameterType="Long" resultMap="BaseResultMap" >
+    select
+    zj_sorts.sort_id,
+    zj_sorts.sort_name,
+    zj_sorts.sort_description
+    from
+    zj_sorts left join zj_set_article_sort on
+    zj_set_article_sort.sort_id = zj_sorts.sort_id
+    where zj_set_article_sort.article_id = #{articleId}
+  </select>
+
+  <insert id="insertArtSort" >
+    insert into zj_set_article_sort
+    (article_id, sort_id) values (#{articleId} , #{sortId})
+  </insert>
+</mapper>

@@ -1,0 +1,205 @@
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.2</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" th:href="@{/admin/css/font.css}">
+    <link rel="stylesheet" th:href="@{/admin/css/xadmin.css}">
+    <script type="text/javascript" th:src="@{/admin/lib/layui/layui.js}" charset="utf-8"></script>
+    <script type="text/javascript" th:src="@{/admin/js/xadmin.js}"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form class="layui-form" id="uptForm" >
+            <div class="layui-form-item">
+                <label for="username" class="layui-form-label">
+                    <span class="x-red">*</span>登录名
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="username" name="userName" required="" lay-verify="required"
+                           autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>将会成为您唯一的登入名
+                </div>
+            </div>
+            <div class="layui-form-item" >
+                <label for="nickName" class="layui-form-label"><span class="x-red">*</span>昵称</label>
+                <div class="layui-input-inline">
+                    <input type="text" id="nickName" name="userNickname" required="" lay-verify="nickName"
+                           autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="phone" class="layui-form-label">
+                    <span class="x-red">*</span>手机
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="phone" name="userTelephoneNumber" required="" lay-verify="phone"
+                           autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_email" class="layui-form-label">
+                    <span class="x-red">*</span>邮箱
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="L_email" name="userEmail" required="" lay-verify="email"
+                           autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item" style="height: 30px">
+                <label class="layui-form-label"><span class="x-red">*</span>角色</label>
+                <div class="layui-input-block">
+                    <input id="uad" type="radio" name="userPer" value="user:admin" lay-skin="primary" title="超级管理员"  >
+                    <input id="uno" type="radio" name="userPer" value="user:normal" lay-skin="primary" title="普通用户"checked >
+                </div>
+            </div>
+
+            <div class="layui-form-item" style="margin-left: 70px;">
+                <div class="layui-input-inline">
+                    <div class="layui-upload">
+                        <div class="layui-upload-list">
+                            <img class="layui-upload-img" name="userProfilePhoto"
+                                 id="demo1" style="height: 60px;width: 80px;border: black">
+                        </div>
+                        <button type="button" class="layui-btn" id="test1">头像上传</button>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="layui-form-item" style="margin-left: 100px;margin-top: 20px">
+                <div class="layui-input-inline">
+                <button  class="layui-btn" lay-filter="upt" lay-submit="">
+                    提交
+                </button>
+                <button  type="reset" class="layui-btn layui-btn-primary" >
+                    重置
+                </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'layer','upload'],
+    function() {
+        $ = layui.jquery;
+        var form = layui.form,
+            upload = layui.upload,
+            layer = layui.layer;
+        //初始化数据
+        var uid = '[[${userInfo.userId}]]';
+        var username = '[[${userInfo.userName}]]';
+        var email = '[[${userInfo.userEmail}]]';
+        var phone = '[[${userInfo.userTelephoneNumber}]]';
+        var nickname = '[[${userInfo.userNickname}]]';
+        var role = '[[${userInfo.userPer}]]';
+        var photo = '[[${userInfo.userProfilePhoto}]]';
+        var myFile = "" ;
+        $("#username").val(username);
+        $("#phone").val(phone);
+        $("#L_email").val(email);
+        $("#nickName").val(nickname);
+        if (role == "user:admin"){
+            $('#uad').attr('checked', true);
+            form.render();
+        }else {
+            $('#uno').attr('checked', true);
+            form.render();
+        }
+        //普通图片上传
+        var uploadInst = upload.render({
+            elem: '#test1'
+                ,url: '/user/doUpload' //改成您自己的上传接口
+            ,before: function(obj){
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result){
+                    $('#demo1').attr('src', result); //图片链接（base64）
+                    //获取文件名称
+                    myFile = "/upload/tmp/"+file.name;
+                });
+            }
+            ,done: function(res){
+                //如果上传失败
+                if(res.code > 0){
+                    return layer.msg('上传失败');
+                }
+                //上传成功
+                return layer.msg('上传成功');
+            }
+            ,error: function(){
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function(){
+                    uploadInst.upload();
+                });
+            }
+        });
+
+        //自定义验证规则
+        form.verify({
+            nikename: function(value) {
+                if (value.length < 5) {
+                    return '昵称至少得5个字符啊';
+                }
+            },
+            pass: [/(.+){6,12}$/, '密码必须6到12位'],
+            repass: function(value) {
+                if ($('#L_pass').val() != $('#L_repass').val()) {
+                    return '两次密码不一致';
+                }
+            }
+        });
+
+        //监听提交
+        form.on('submit(upt)',
+            function(data) {
+                //准备提交的数据
+                username = data.field.userName;
+                email = data.field.userEmail;
+                phone = data.field.userTelephoneNumber;
+                nickname  = data.field.userNickname;
+                role = data.field.userPer;
+                if(myFile == ""){
+                    myFile = photo;
+                }
+                // console.log(data);
+                //发异步，把数据提交给后台
+                $.get("/user/update",{userId:uid,userName:username,userEmail:email,userTelephoneNumber:phone,userNickname:nickname,userPer:role,userProfilePhoto:myFile},function (msg) {
+                },JSON)
+                layer.alert("修改成功", {
+                        icon: 6
+                    },
+                    function() {
+                        //关闭当前frame
+                        xadmin.close();
+                        // 可以对父窗口进行刷新
+                        xadmin.father_reload();
+                    });
+                return false;
+            });
+
+    });
+</script>
+<script>
+    var _hmt = _hmt || []; (function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?b393d153aeb26b46e9431fabaf0f6190";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+</body>
+
+</html>

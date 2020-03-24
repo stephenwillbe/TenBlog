@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dagougou.tenblog.admin.dao.CommentsMapper" >
+  <resultMap id="BaseResultMap" type="com.dagougou.tenblog.admin.entity.Comments" >
+    <id column="comment_id" property="commentId" jdbcType="BIGINT" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="article_id" property="articleId" jdbcType="BIGINT" />
+    <result column="comment_like_count" property="commentLikeCount" jdbcType="BIGINT" />
+    <result column="comment_date" property="commentDate" jdbcType="TIMESTAMP" />
+    <result column="comment_content" property="commentContent" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    comment_id, user_name, article_id, comment_like_count, comment_date,comment_content
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from zj_comments
+    where comment_id = #{commentId,jdbcType=BIGINT}
+  </select>
+
+  <select id="findAll" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List"></include>
+    from
+    zj_comments
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from zj_comments
+    where comment_id = #{commentId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.dagougou.tenblog.admin.entity.Comments" >
+    insert into zj_comments (comment_id, user_name, article_id,
+      comment_like_count, comment_date, comment_content
+      )
+    values (#{commentId,jdbcType=BIGINT}, #{userName,jdbcType=VARCHAR}, #{articleId,jdbcType=BIGINT},
+      #{commentLikeCount,jdbcType=BIGINT}, #{commentDate,jdbcType=TIMESTAMP}, #{commentContent,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.dagougou.tenblog.admin.entity.Comments" >
+    insert into zj_comments
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="commentId != null" >
+        comment_id,
+      </if>
+      <if test="userName != null" >
+        user_name,
+      </if>
+      <if test="articleId != null" >
+        article_id,
+      </if>
+      <if test="commentLikeCount != null" >
+        comment_like_count,
+      </if>
+      <if test="commentDate != null" >
+        comment_date,
+      </if>
+      <if test="commentContent != null" >
+        comment_content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="commentId != null" >
+        #{commentId,jdbcType=BIGINT},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="articleId != null" >
+        #{articleId,jdbcType=BIGINT},
+      </if>
+      <if test="commentLikeCount != null" >
+        #{commentLikeCount,jdbcType=BIGINT},
+      </if>
+      <if test="commentDate != null" >
+        #{commentDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="commentContent != null" >
+        #{commentContent,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dagougou.tenblog.admin.entity.Comments" >
+    update zj_comments
+    <set >
+      <if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="articleId != null" >
+        article_id = #{articleId,jdbcType=BIGINT},
+      </if>
+      <if test="commentLikeCount != null" >
+        comment_like_count = #{commentLikeCount,jdbcType=BIGINT},
+      </if>
+      <if test="commentDate != null" >
+        comment_date = #{commentDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="commentContent != null" >
+        comment_content = #{commentContent,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where comment_id = #{commentId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.dagougou.tenblog.admin.entity.Comments" >
+    update zj_comments
+    set user_name = #{userName,jdbcType=VARCHAR},
+      article_id = #{articleId,jdbcType=BIGINT},
+      comment_like_count = #{commentLikeCount,jdbcType=BIGINT},
+      comment_date = #{commentDate,jdbcType=TIMESTAMP},
+      comment_content = #{commentContent,jdbcType=LONGVARCHAR}
+    where comment_id = #{commentId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dagougou.tenblog.admin.entity.Comments" >
+    update zj_comments
+    set user_name = #{userName,jdbcType=VARCHAR},
+      article_id = #{articleId,jdbcType=BIGINT},
+      comment_like_count = #{commentLikeCount,jdbcType=BIGINT},
+      comment_date = #{commentDate,jdbcType=TIMESTAMP}
+    where comment_id = #{commentId,jdbcType=BIGINT}
+  </update>
+
+</mapper>

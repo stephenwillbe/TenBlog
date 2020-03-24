@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/admin/editormd/css/editormd.css}"/>
+    <script src="https://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script th:src="@{/admin/editormd/editormd.min.js}"></script>
+    <!-- editor.md -->
+    <script th:src="@{/admin/editormd/src/editormd.js}"></script>
+    <link rel="stylesheet" th:href="@{/admin/css/font.css}">
+    <link rel="stylesheet" th:href="@{/admin/css/xadmin.css}">
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script th:src="@{/admin/lib/layui/layui.js}" charset="utf-8"></script>
+    <script type="text/javascript" th:src="@{/admin/js/xadmin.js}"></script>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body ">
+                    <blockquote class="layui-elem-quote">文章编写<i class="layui-icon x-show" status='true'>&#xe623;</i>
+                        <a class="layui-btn layui-btn-small" style="height: 29px;line-height: 1.6em;margin-top: 0px;float: right;width: 50px;" onclick="location.reload()" title="刷新">
+                            <i class="layui-icon layui-icon-refresh" style="line-height:20px"></i>
+                        </a>
+                    </blockquote>
+                </div>
+                <form class="layui-form layui-col-space5">
+                    <!--文章类型，标签选择，文章标题-->
+                    <div class="layui-form-item" style="width: 92%">
+                        <label class="layui-form-label">文章标题</label>
+                        <div class="layui-input-block">
+                            <input  type="text" name="blogTitle" required  lay-verify="required" placeholder="请输入文章标题" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item" style="width: 92%">
+                        <label class="layui-form-label">文章类型</label>
+                        <div class="layui-input-block" >
+                            <select name="blogSort" lay-verify="required" >
+                                <option></option>
+                                <option th:each="s : ${sort}" th:value="${s.sortId}">[[${s.sortName}]]</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item" style="width: 92%">
+                        <label class="layui-form-label">文章标签</label>
+                        <div class="layui-input-block" >
+                            <input th:each="l : ${label}" type="checkbox" name="labels"  th:title="${l.labelName}" th:value="${l.labelId}">
+                        </div>
+                    </div>
+                    <div class="layui-form-item" >
+                        <label class="layui-form-label">开启评论</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="blogComment" lay-skin="switch">
+                        </div>
+                    </div>
+                    <!--md编写栏-->
+                    <div id="my-editormd">
+                        <textarea id="my-text" name="my-text" style="display:none;"
+                                  class="markdown-textarea"></textarea>
+                        <!-- 注意：name属性的值-->
+                        <textarea id="text" name="text" style="display:none;"></textarea>
+                    </div>
+                    <!--提交/保存按钮-->
+                    <div class="layui-form-item" style="float: right;margin-right: 50px" >
+                        <div class="layui-input-block">
+                            <button type="reset" class="layui-btn layui-btn-primary" >重置</button>
+                            <button class="layui-btn " >保存文章</button>
+                            <button class="layui-btn layui-btn-checked" lay-submit lay-filter="publishDemo">立即发布</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!--页面底部-->
+<div th:replace="~{commons/foot :: footBar}"></div>
+<script type="text/javascript">
+    $(function () {
+        editormd("my-editormd", {//注意1：这里的就是上面的DIV的id属性值
+            width: "90%",
+            height: 640,
+            syncScrolling: "single",
+            path: "/admin/editormd/lib/",//注意2：你的路径
+            saveHTMLToTextarea: true,//注意3：这个配置，方便post提交表单
+            /**上传图片相关配置如下*/
+            imageUpload: true,
+            imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp"], //图片上传格式
+            imageUploadURL: "/admin/attach/uploadfile",
+            onload: function (obj) { //上传成功之后的回调
+            }
+        });
+    });
+    //Demo
+    layui.use('form', function(){
+        var form = layui.form;
+        // th:name="${'labelId['+l.labelId+']'}"
+        //监听提交，直接发布
+        form.on('submit(publishDemo)', function(data){
+            // layer.msg(JSON.stringify(data));
+            console.log(data.field)
+            //初始化数据
+            var uid = '[[${session.loginUser.userId}]]';
+            var title = data.field.blogTitle;
+            var mdText = data.field.text;
+            // var htmlText = data.field.my-editormd-html-code;
+            var allowComment = data.field.blogComment;
+            var sortId = data.field.blogSort;
+            var ids = checkValue();
+            //把数据传到后台
+            $.get(
+                "/article/publish"
+                ,{"userId":uid,"articleTitle":title,"articleMdContent":mdText
+                 ,"articleStatus":1,"articleAllowComment":allowComment,"sortId":sortId,"labelIds":ids}
+                  ,function (msg) {
+                   console.log(msg)
+                    if(msg == 'failure'){
+                        //提交表单,并刷新
+                        layer.alert("发布失败！", {
+                                icon: 5
+                            },
+                            function() {
+                                //关闭当前frame
+                                xadmin.close();
+                                // 可以对父窗口进行刷新
+                                xadmin.father_reload();
+                            });
+                    }else {
+                        //提交表单,并刷新
+                        layer.alert("发布成功", {
+                                icon: 6
+                            },
+                            function() {
+                                //关闭当前frame
+                                xadmin.close();
+                                // 可以对父窗口进行刷新
+                                xadmin.father_reload();
+                            });
+                    }
+                })
+            return false;
+        });
+
+        //监听提交，文章为未发布状态
+
+    });
+
+    //获取复选框的数据
+    function checkValue() {
+       checkbox = $("input[name='labels']")
+        var array = [];
+        checkbox.each(function () {
+          if($(this).is(':checked')){
+              array.push($(this).val());
+          }else{
+              array.push("");
+          }
+        })
+        return array;
+    }
+</script>
+</body>
+</html>

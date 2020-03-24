@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.thymeleaf.org/thymeleaf-extras-shiro">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="left-nav" th:fragment="sidebar">
+    <div id="side-nav">
+        <ul id="nav">
+            <li shiro:hasPermission="user:admin">
+                <a onclick="xadmin.add_tab('数据监控','/admin/monitor')" >
+                    <i class="layui-icon layui-icon-home" style="font-size: 18px; color: #8e44ad;"></i>
+                    <cite>数据监控</cite>
+                </a>
+            </li>
+            <li>
+                <a onclick="xadmin.add_tab('发布文章','/admin/postArt')">
+                    <i class="layui-icon layui-icon-add-1" style="font-size: 18px; color: #8e44ad;"></i>
+                    <cite>发布文章</cite>
+                    </a>
+            </li>
+
+            <li>
+                <a onclick="xadmin.add_tab('文章管理','/admin/artList')">
+                    <i class="layui-icon layui-icon-read" style="font-size: 18px; color: #8e44ad;"></i>
+                    <cite>文章管理</cite>
+                    </a>
+            </li>
+            <li shiro:hasPermission="user:admin">
+                <a onclick="xadmin.add_tab('评论管理','/admin/comment')">
+                    <i class="layui-icon layui-icon-dialogue" style="font-size: 18px; color: #8e44ad;"></i>
+                    <cite>评论管理</cite>
+                    </a>
+            </li>
+            <li shiro:hasPermission="user:admin">
+                <a onclick="xadmin.add_tab('分类管理','/admin/sorts')">
+                    <i class="layui-icon layui-icon-app" style="font-size: 18px; color: #8e44ad;"></i>
+                    <cite>分类管理</cite>
+                    </a>
+            </li>
+            <li shiro:hasPermission="user:admin">
+                <a onclick="xadmin.add_tab('标签管理','/admin/label')">
+                    <i class="layui-icon layui-icon-note" style="font-size: 18px; color: #8e44ad;"></i>
+                    <cite>标签管理</cite>
+                    </a>
+            </li>
+            <li shiro:hasPermission="user:admin" >
+                <a onclick="xadmin.add_tab('用户管理','/admin/user')">
+                    <i class="layui-icon layui-icon-user" style="font-size: 18px; color: #8e44ad;"></i>
+                    <cite>用户管理</cite>
+                    </a>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

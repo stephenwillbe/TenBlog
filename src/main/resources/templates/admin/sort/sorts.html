@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html class="x-admin-sm" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.2</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" th:href="@{/admin/css/font.css}">
+    <link rel="stylesheet" th:href="@{/admin/css/xadmin.css}">
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script th:src="@{/admin/lib/layui/layui.js}" charset="utf-8"></script>
+    <script type="text/javascript" th:src="@{/admin/js/xadmin.js}"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body ">
+                    <blockquote class="layui-elem-quote">博客分类列表<i class="layui-icon x-show" status='true'>&#xe623;</i>
+                        <a class="layui-btn layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" onclick="location.reload()" title="刷新">
+                            <i class="layui-icon layui-icon-refresh" style="line-height:30px"></i>
+                        </a>
+                    </blockquote>
+                    <hr>
+                    <form class="layui-form layui-col-space5">
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <input class="layui-input" lay-verify="required" placeholder="一级分类名" id="sortName"></div>
+                        <div class="layui-input-inline layui-show-xs-block">
+                            <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon"></i>增加</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-card-body ">
+                   <table id="sortTab" lay-filter="test"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--页面底部-->
+<div th:replace="~{commons/foot :: footBar}"></div>
+<script type="text/html" id="barDemo">
+    <button class="layui-btn layui-btn layui-btn-xs" lay-event="check" ><i class="layui-icon">&#xe642;</i>编辑二级分类</button>
+    <button class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" ><i class="layui-icon">&#xe642;</i>删除</button>
+</script>
+
+<script type="text/javascript"  th:inline="none">
+    layui.use(['form'], function(){
+        form = layui.form;
+
+    });
+
+    layui.use('table',function () {
+       var table = layui.table;
+       table.render({
+           elem:'#sortTab',
+           url:'/sorts/list',
+           parseData:function (result) {
+               return {
+                   "code": 0
+                   , "msg": ""
+                   , "count": 100
+                   , "data": result
+               }
+           },
+           cols:[[
+               {type: 'checkbox', fixed: 'left'}
+               ,{field:'sortId', title:'ID' ,sort: true}
+               ,{field:'sortName', title:'分类名' ,sort: true}
+               ,{field:'sortDescription', title:'详情' ,sort: true}
+               ,{ title:'操作', toolbar: '#barDemo'}
+           ]]
+       })
+        //监听表格工具条
+        table.on('tool(test)',function (obj) {//注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data
+            if (obj.event === 'check'){
+                xadmin.open('查看','/sorts/check/'+data.sortId);
+            }else if(obj.event === 'del'){
+                member_del(this,data.sortId);
+            }
+        })
+
+    })
+    //新增表单提交
+    layui.use(['form'], function(){
+        var form = layui.form;
+        //新增分类
+        form.on('submit(sreach)',function () {
+            var sortName = $("#sortName").val();
+            //发送异步请求
+            $.get('/sorts/insert',{"sortName":sortName,"parentId":1,"sortState":1},
+                function (msg) {
+                    console.log(msg)
+                    if(msg == 'failure'){
+                        //提交表单,并刷新
+                        layer.alert("新增失败,分类已存在", {
+                                icon: 5
+                            },
+                            function() {
+                                //关闭当前frame
+                                xadmin.close();
+                                // 可以对父窗口进行刷新
+                                xadmin.father_reload();
+                            });
+                    }else{
+                        //提交表单,并刷新
+                        layer.alert("新增成功", {
+                                icon: 6
+                            },
+                            function() {
+                                //关闭当前frame
+                                xadmin.close();
+                                // 可以对父窗口进行刷新
+                                xadmin.father_reload();
+                            });
+                    }
+                })
+            return false;
+        });
+    });
+
+    /*分类-删除*/
+    function member_del(obj,id){
+        layer.confirm('确认要删除吗？',function(index){
+            //发异步删除数据
+            $.get('/sorts/del',{"sortId":id},function (msg) {
+                console.log(msg)
+                if(msg=='failure'){
+                    layer.msg('删除失败!',{icon:2,time:1000});
+                }else{
+                    $(obj).parents("tr").remove();
+                    layer.msg('已删除!',{icon:1,time:1000});
+                }
+            })
+        });
+    }
+
+    // 分类展开收起的分类的逻辑
+    $(function(){
+        $("tbody.x-cate tr[fid!='0']").hide();
+        // 栏目多级显示效果
+        $('.x-show').click(function () {
+            if($(this).attr('status')=='true'){
+                $(this).html('&#xe625;');
+                $(this).attr('status','false');
+                cateId = $(this).parents('tr').attr('cate-id');
+                $("tbody tr[fid="+cateId+"]").show();
+            }else{
+                cateIds = [];
+                $(this).html('&#xe623;');
+                $(this).attr('status','true');
+                cateId = $(this).parents('tr').attr('cate-id');
+                getCateId(cateId);
+                for (var i in cateIds) {
+                    $("tbody tr[cate-id="+cateIds[i]+"]").hide().find('.x-show').html('&#xe623;').attr('status','true');
+                }
+            }
+        })
+    })
+
+    var cateIds = [];
+    function getCateId(cateId) {
+        $("tbody tr[fid="+cateId+"]").each(function(index, el) {
+            id = $(el).attr('cate-id');
+            cateIds.push(id);
+            getCateId(id);
+        });
+    }
+
+</script>
+</body>
+</html>
