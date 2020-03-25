@@ -8,11 +8,14 @@ import com.dagougou.tenblog.admin.entity.Labels;
 import com.dagougou.tenblog.admin.service.LabelsService;
 import com.dagougou.tenblog.admin.service.SortsService;
 import com.dagougou.tenblog.admin.service.UserService;
+import com.dagougou.tenblog.admin.util.DateUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -100,4 +103,28 @@ class TenblogApplicationTests {
             System.out.println(c);
         }
     }
+    @Test
+    void test10(){
+        List<Comments> comments = commentsMapper.getCommentByContent("学习");
+        for(Comments c : comments){
+            System.out.println(c);
+        }
+    }
+    @Test
+    void test11(){
+        Date startTime = DateUtil.StrToDate("2020-03-23", "yyyy-MM-dd");
+        Date endTime = DateUtil.StrToDate("2020-03-25", "yyyy-MM-dd");
+        List<Comments> comments = commentsMapper.getCommentByDate(startTime,endTime);
+        for(Comments c : comments){
+            System.out.println(c);
+        }
+    }
+    @Test
+    void test12(){
+        List<Long> ids = new ArrayList<>();
+        ids.add((long)668);
+        ids.add((long)669);
+        System.out.println(commentsMapper.deleteByIdList(ids));
+    }
+
 }

@@ -12,4 +12,12 @@ import java.util.List;
 public interface CommentsService {
     //获得所有评论
     List<Comments> getAll();
+
+    int deleteComment(long parseInt);
+
+    int deleteComments(String[] ids);
+
+    List<Comments> getContentLike(String content);
+
+    List<Comments> getDateLike(String startTime, String endTime);
 }

@@ -13,7 +13,7 @@ public interface ArticleLabelMapper {
 
     //批量添加文章的标签
     int insertArticleLabel(List<ArticleLabel> list);
-    //批量删除文章的标签
+
     int deleteArticleLabel(Integer articleId);
 
     ArticleLabel selectByPrimaryKey(Integer tId);
