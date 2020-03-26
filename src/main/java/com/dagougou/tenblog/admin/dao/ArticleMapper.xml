@@ -14,6 +14,13 @@
     <result column="article_status" property="articleStatus" jdbcType="TINYINT" />
     <result column="article_allow_comment" property="articleAllowComment" jdbcType="TINYINT" />
   </resultMap>
+  <resultMap id="ArticleDateMap" type="com.dagougou.tenblog.admin.entity.UserArticleData" >
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="views" property="articleViews" />
+    <result column="likes" property="articleLikeCount" />
+    <result column="comments" property="articleCommentCount" />
+    <result column="articles" property="articles" />
+  </resultMap>
   <sql id="Base_Column_List" >
     article_id, user_id, article_views, article_comment_count, article_date, article_like_count ,article_title, article_html_content,article_status,article_allow_comment,article_md_content
   </sql>
@@ -149,5 +156,19 @@
     from zj_articles
   </select>
 
+  <select id="selectAllArticleData" resultMap="ArticleDateMap" parameterType="Long">
+    select
+    user_id,COUNT(*) articles,SUM(article_views) views , SUM(article_like_count) likes , SUM(article_comment_count) comments
+    from zj_articles
+    where user_id = #{userId}
+  </select>
+
+  <select id="selectArticleByDateLimit" resultMap="BaseResultMap" >
+    select
+    article_id , article_title
+    from  zj_articles
+    where user_id = #{userId}
+    order by article_date desc limit #{articleNum}
+  </select>
 
 </mapper>

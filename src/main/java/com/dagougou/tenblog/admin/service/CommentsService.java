@@ -14,10 +14,12 @@ public interface CommentsService {
     List<Comments> getAll();
 
     int deleteComment(long parseInt);
-
+    //批量删除评论
     int deleteComments(String[] ids);
-
+    //根据模糊内容查询评论
     List<Comments> getContentLike(String content);
-
+    //查询模糊日期区间的评论
     List<Comments> getDateLike(String startTime, String endTime);
+    //查询近几日的评论
+    List<Comments> getCommentRecent();
 }

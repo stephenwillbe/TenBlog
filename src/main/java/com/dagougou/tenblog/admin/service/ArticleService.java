@@ -1,9 +1,6 @@
 package com.dagougou.tenblog.admin.service;
 
-import com.dagougou.tenblog.admin.entity.Article;
-import com.dagougou.tenblog.admin.entity.ArticleLabel;
-import com.dagougou.tenblog.admin.entity.ArticleSort;
-import com.dagougou.tenblog.admin.entity.Sorts;
+import com.dagougou.tenblog.admin.entity.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,4 +32,8 @@ public interface ArticleService {
     int updateArticleSort(Integer articleId, Integer sortId);
     //根据文章id修改文章的标签
     int updateArticleLabel(Integer articleId,String[] labelIds);
+    //获得文章的数据
+    UserArticleData getAllArticleData(Long userId);
+    //获取文章最近的数据
+    List<Article> getArticleRecent(Long userId);
 }

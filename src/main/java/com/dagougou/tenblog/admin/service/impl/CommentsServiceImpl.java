@@ -61,4 +61,10 @@ public class CommentsServiceImpl implements CommentsService {
             Date end = DateUtil.StrToDate(endTime,"yyyy-MM-dd");
             return commentsMapper.getCommentByDate(start,end);
     }
+
+    @Override
+    public List<Comments> getCommentRecent() {
+        List<Comments> comments = commentsMapper.selectCommentsByDateLimit(5);
+        return comments;
+    }
 }

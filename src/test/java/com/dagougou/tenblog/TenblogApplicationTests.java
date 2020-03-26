@@ -5,6 +5,7 @@ import com.dagougou.tenblog.admin.dao.*;
 import com.dagougou.tenblog.admin.entity.Article;
 import com.dagougou.tenblog.admin.entity.Comments;
 import com.dagougou.tenblog.admin.entity.Labels;
+import com.dagougou.tenblog.admin.entity.Log;
 import com.dagougou.tenblog.admin.service.LabelsService;
 import com.dagougou.tenblog.admin.service.SortsService;
 import com.dagougou.tenblog.admin.service.UserService;
@@ -45,6 +46,9 @@ class TenblogApplicationTests {
 
     @Resource
     private CommentsMapper commentsMapper;
+
+    @Resource
+    private LogMapper logMapper;
 
     @Test
     void contextLoads() {
@@ -125,6 +129,27 @@ class TenblogApplicationTests {
         ids.add((long)668);
         ids.add((long)669);
         System.out.println(commentsMapper.deleteByIdList(ids));
+    }
+    @Test
+    void test13(){
+        List<Log> logs = logMapper.selectByDateLimit(2);
+        for(Log l : logs){
+            System.out.println(l);
+        }
+    }
+    @Test
+    void test14(){
+        List<Article> articles = articleMapper.selectArticleByDateLimit(2, (long) 1);
+        for(Article article : articles){
+            System.out.println(article);
+        }
+    }
+    @Test
+    void test15(){
+        List<Comments> comments = commentsMapper.selectCommentsByDateLimit(1);
+        for (Comments comment : comments){
+            System.out.println(comment);
+        }
     }
 
 }

@@ -98,6 +98,7 @@
                     {field:'articleTitle', title:'文章标题' ,templet:'#hrefDemo',width:'30%',align:'center' }
                     ,{field:'articleViews', title:'浏览量',sort: true,width:'7%',align:'center' }
                     ,{field:'articleLikeCount', title:'点赞数',  sort: true,width:'7%',align:'center'}
+                    ,{field:'articleCommentCount', title:'评论数',  sort: true,width:'7%',align:'center'}
                     ,{field:'articleDate', title:'发布时间',sort: true ,width:'23%',align:'center'}
                     ,{field:'articleAllowComment', title:'开启评论',templet: '#allowDemo',width:'8%',align:'center'}
                     ,{field:'articleStatus',title:'状态' ,templet: '#statusDemo',width:'8%',align:'center'}
@@ -148,7 +149,7 @@
     function uptStatus(artId,status){
         layer.confirm('确认要修改吗？', function (index) {
             //发异步删除数据
-            $.get('/article/update', {"articleId": artId,"articleStatus":status}, function (msg) {
+            $.get('/article/uptStatus', {"articleId": artId,"articleStatus":status}, function (msg) {
                 console.log(msg)
                 if (msg == "failure") {
                     layer.msg('修改失败!', {icon: 2, time: 1000});
@@ -166,7 +167,7 @@
     function uptComment(artId,aComment){
         layer.confirm('确认要修改吗？', function (index) {
             //发异步删除数据
-            $.get('/article/update', {"articleId": artId,"articleAllowComment":aComment}, function (msg) {
+            $.get('/article/uptComment', {"articleId": artId,"articleAllowComment":aComment}, function (msg) {
                 console.log(msg)
                 if (msg == "failure") {
                     layer.msg('修改失败!', {icon: 2, time: 1000});

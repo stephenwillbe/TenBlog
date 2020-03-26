@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dagougou.tenblog.admin.dao.LogMapper" >
+  <resultMap id="BaseResultMap" type="com.dagougou.tenblog.admin.entity.Log" >
+    <id column="log_id" property="logId" jdbcType="BIGINT" />
+    <result column="log_action" property="logAction" jdbcType="VARCHAR" />
+    <result column="log_data" property="logData" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
+    <result column="log_ip" property="logIp" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    log_id, log_action, log_data, user_id, log_ip, create_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from zj_logs
+    where log_id = #{logId,jdbcType=BIGINT}
+  </select>
+  <select id="selectByDateLimit" parameterType="Integer" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from zj_logs
+    order by create_time limit #{recordCount}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from zj_logs
+    where log_id = #{logId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.dagougou.tenblog.admin.entity.Log" >
+    insert into zj_logs (log_id, log_action, log_data, 
+      user_id, log_ip, create_time
+      )
+    values (#{logId,jdbcType=BIGINT}, #{logAction,jdbcType=VARCHAR}, #{logData,jdbcType=VARCHAR}, 
+      #{userId,jdbcType=BIGINT}, #{logIp,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.dagougou.tenblog.admin.entity.Log" >
+    insert into zj_logs
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="logId != null" >
+        log_id,
+      </if>
+      <if test="logAction != null" >
+        log_action,
+      </if>
+      <if test="logData != null" >
+        log_data,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="logIp != null" >
+        log_ip,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="logId != null" >
+        #{logId,jdbcType=BIGINT},
+      </if>
+      <if test="logAction != null" >
+        #{logAction,jdbcType=VARCHAR},
+      </if>
+      <if test="logData != null" >
+        #{logData,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="logIp != null" >
+        #{logIp,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.dagougou.tenblog.admin.entity.Log" >
+    update zj_logs
+    <set >
+      <if test="logAction != null" >
+        log_action = #{logAction,jdbcType=VARCHAR},
+      </if>
+      <if test="logData != null" >
+        log_data = #{logData,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="logIp != null" >
+        log_ip = #{logIp,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where log_id = #{logId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.dagougou.tenblog.admin.entity.Log" >
+    update zj_logs
+    set log_action = #{logAction,jdbcType=VARCHAR},
+      log_data = #{logData,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=BIGINT},
+      log_ip = #{logIp,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where log_id = #{logId,jdbcType=BIGINT}
+  </update>
+</mapper>

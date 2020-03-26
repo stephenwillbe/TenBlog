@@ -191,4 +191,37 @@ public class ArticleController {
             }
         return "failure";
     }
+    /*
+     * @Description //修改评论状态
+     * @Param []
+     * @return java.lang.String
+     **/
+    @RequestMapping("/uptComment")
+    @ResponseBody
+    public String updateCommentStatus(String articleId ,Integer articleAllowComment ){
+        if(StringUtil.isNotEmpty(articleId)&&articleAllowComment!=null) {
+            Article article = new Article();
+            article.setArticleId((long) Integer.parseInt(articleId));
+            article.setArticleAllowComment(articleAllowComment);
+            int i = articleService.updateArticle(article);
+            if (i > 0) {
+                return "success";
+            }
+        }
+        return "failure";
+    }
+    @RequestMapping("/uptStatus")
+    @ResponseBody
+    public String updateActiveStatus(String articleId ,Integer articleStatus){
+        if(StringUtil.isNotEmpty(articleId)&&articleStatus!=null) {
+            Article article = new Article();
+            article.setArticleId((long) Integer.parseInt(articleId));
+            article.setArticleStatus(articleStatus);
+            int i = articleService.updateArticle(article);
+            if (i > 0) {
+                return "success";
+            }
+        }
+        return "failure";
+    }
 }

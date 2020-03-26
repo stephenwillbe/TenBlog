@@ -28,4 +28,6 @@ public interface CommentsMapper {
     List<Comments> getCommentByDate(@Param("startTime") Date startTime , @Param("endTime")  Date endTime);
     //批量删除评论
     int deleteByIdList(List<Long> list);
+    //查询最近几天的评论
+    List<Comments> selectCommentsByDateLimit(@Param("commentNum") Integer commentNum);
 }

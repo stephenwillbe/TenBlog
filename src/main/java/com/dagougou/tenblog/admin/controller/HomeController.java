@@ -1,11 +1,8 @@
 package com.dagougou.tenblog.admin.controller;
 
-import com.dagougou.tenblog.admin.entity.Labels;
-import com.dagougou.tenblog.admin.entity.Sorts;
-import com.dagougou.tenblog.admin.entity.User;
-import com.dagougou.tenblog.admin.service.LabelsService;
-import com.dagougou.tenblog.admin.service.SortsService;
-import com.dagougou.tenblog.admin.service.UserService;
+import com.dagougou.tenblog.admin.dao.ArticleMapper;
+import com.dagougou.tenblog.admin.entity.*;
+import com.dagougou.tenblog.admin.service.*;
 import com.dagougou.tenblog.admin.util.StringUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +30,12 @@ public class HomeController {
     private SortsService sortsService;
     @Resource
     private LabelsService labelsService;
+    @Resource
+    private ArticleService articleService;
+    @Resource
+    private CommentsService commentsService;
+    @Resource
+    private LogService logService;
     /*
      * @Description //跳转到后台首页
      * @Param []
@@ -43,12 +47,22 @@ public class HomeController {
     }
 
     /*
-     * @Description //博客数据检测
+     * @Description //博客数据页面,用户文章数据,最近文章，最近评论，最近日志，7天数据
      * @Param []
      * @return java.lang.String
      **/
     @RequestMapping("/monitor")
-    public String welcome(){
+    public String welcome(HttpSession session , Model model){
+        User loginUser = (User)session.getAttribute("loginUser");
+        Long userId = loginUser.getUserId();
+        UserArticleData articleData = articleService.getAllArticleData(userId);
+        List<Article> articles =  articleService.getArticleRecent(userId);
+        List<Comments> comments = commentsService.getCommentRecent();
+        List<Log> logs = logService.getLogsRecent();
+        model.addAttribute("articleData",articleData);
+        model.addAttribute("articles",articles);
+        model.addAttribute("comments",comments);
+        model.addAttribute("logs",logs);
         return "admin/monitor";
     }
 
@@ -149,4 +163,6 @@ public class HomeController {
     public String toComment(){
         return "admin/comment/list";
     }
+
+
 }

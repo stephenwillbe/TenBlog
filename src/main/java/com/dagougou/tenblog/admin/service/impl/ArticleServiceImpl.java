@@ -6,6 +6,7 @@ import com.dagougou.tenblog.admin.dao.ArticleSortMapper;
 import com.dagougou.tenblog.admin.entity.Article;
 import com.dagougou.tenblog.admin.entity.ArticleLabel;
 import com.dagougou.tenblog.admin.entity.ArticleSort;
+import com.dagougou.tenblog.admin.entity.UserArticleData;
 import com.dagougou.tenblog.admin.service.ArticleService;
 import com.dagougou.tenblog.admin.util.StringUtil;
 import org.springframework.stereotype.Service;
@@ -109,5 +110,24 @@ public class ArticleServiceImpl implements ArticleService {
             result = -1;
         }
         return result;
+    }
+
+    @Override
+    public UserArticleData getAllArticleData(Long userId) {
+        if(userId!=null){
+            UserArticleData userArticleData = articleMapper.selectAllArticleData(userId);
+            return userArticleData;
+        }
+        return null;
+    }
+
+    //获取最近的文章数据
+    @Override
+    public List<Article> getArticleRecent(Long userId) {
+        if(userId!=null){
+            List<Article> articles = articleMapper.selectArticleByDateLimit(5, userId);
+             return articles;
+        }
+        return null;
     }
 }
