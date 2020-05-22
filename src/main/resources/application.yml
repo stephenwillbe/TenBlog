@@ -14,8 +14,8 @@ spring:
       driver-class-name: com.mysql.cj.jdbc.Driver
       #基本属性
       url: jdbc:mysql://localhost:3306/blog?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&serverTimezone=GMT%2B8&useSSL=false
-      username: root
-      password: root
+      username: chenAdmin
+      password: 5sNmnZsrccpZxyTG
       #配置初始化大小/最小/最大
       initial-size: 1
       min-idle: 1
@@ -36,7 +36,7 @@ spring:
   redis:
     port: 6379
     password: root
-    host: 127.0.0.1
+    host: localhost
   #配置文件上传
   servlet:
     multipart:
@@ -50,3 +50,5 @@ mybatis:
   config-location: classpath:mybatis-config.xml
 server:
   max-http-header-size: 102400
+  port: 1107
+

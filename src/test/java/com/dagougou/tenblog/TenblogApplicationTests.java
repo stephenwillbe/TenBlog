@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-@SpringBootTest
+//@SpringBootTest
 class TenblogApplicationTests {
 
     @Resource
@@ -50,29 +50,29 @@ class TenblogApplicationTests {
     @Resource
     private LogMapper logMapper;
 
-    @Test
+    //@Test
     void contextLoads() {
         System.out.println(userMapper.selectByPrimaryKey((long)1));
     }
 
-    @Test
+    //@Test
     void test2(){
 //        System.out.println(userService.getUserByInfo("chen"));
         System.out.println(userService.uptStatus("1",true));
     }
-    @Test
+    //@Test
     void test3(){
         System.out.println(articleMapper.selectByPrimaryKey((long)101));
     }
 
-    @Test
+    //@Test
     void test4(){
         List<Article> all = articleMapper.findAll();
         for(Article article : all){
             System.out.println(article);
         }
     }
-    @Test
+    //@Test
     void test5(){
         List<Labels> labByArtId = labelsMapper.getLabByArtId((long) 999);
         for(Labels labels : labByArtId){
@@ -80,12 +80,12 @@ class TenblogApplicationTests {
         }
     }
 
-    @Test
+    //@Test
     void test6(){
         System.out.println(sortsMapper.getSortByArtId((long)1000));
     }
 
-    @Test
+    //@Test
     void test7(){
         List<Map<String, Object>> la = labelsService.getLabels();
         for(Map<String,Object> map : la){
@@ -93,28 +93,28 @@ class TenblogApplicationTests {
         }
     }
 
-    @Test
+    //@Test
     void test8(){
         Article article = new Article();
         article.setArticleId((long)999);
         article.setArticleStatus(0);
         System.out.println(articleMapper.updateByPrimaryKeySelective(article));
     }
-    @Test
+    //@Test
     void test9(){
         List<Comments> all = commentsMapper.findAll();
         for(Comments c: all){
             System.out.println(c);
         }
     }
-    @Test
+    //@Test
     void test10(){
         List<Comments> comments = commentsMapper.getCommentByContent("学习");
         for(Comments c : comments){
             System.out.println(c);
         }
     }
-    @Test
+    //@Test
     void test11(){
         Date startTime = DateUtil.StrToDate("2020-03-23", "yyyy-MM-dd");
         Date endTime = DateUtil.StrToDate("2020-03-25", "yyyy-MM-dd");
@@ -123,28 +123,28 @@ class TenblogApplicationTests {
             System.out.println(c);
         }
     }
-    @Test
+    //@Test
     void test12(){
         List<Long> ids = new ArrayList<>();
         ids.add((long)668);
         ids.add((long)669);
         System.out.println(commentsMapper.deleteByIdList(ids));
     }
-    @Test
+    //@Test
     void test13(){
         List<Log> logs = logMapper.selectByDateLimit(2);
         for(Log l : logs){
             System.out.println(l);
         }
     }
-    @Test
+    //@Test
     void test14(){
         List<Article> articles = articleMapper.selectArticleByDateLimit(2, (long) 1);
         for(Article article : articles){
             System.out.println(article);
         }
     }
-    @Test
+    //@Test
     void test15(){
         List<Comments> comments = commentsMapper.selectCommentsByDateLimit(1);
         for (Comments comment : comments){

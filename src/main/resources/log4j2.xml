@@ -9,8 +9,8 @@
 
 		<!-- fileName：输出路径 filePattern：命名规则 -->
 		<RollingFile name="RollingFileDebug"
-			fileName="D:/java/BlogLogs/debug.log"
-			filePattern="D:/java/BlogLogs/$${date:yyyy-MM-dd}/debug-%d{yyyy-MM-dd}-%i.log">
+			fileName="/home/chovy/bloglogdebug.log"
+			filePattern="/home/chovy/bloglog$${date:yyyy-MM-dd}/debug-%d{yyyy-MM-dd}-%i.log">
 			<Filters>
 				<ThresholdFilter level="DEBUG" />
 				<ThresholdFilter level="INFO" onMatch="DENY"
@@ -28,8 +28,8 @@
 		</RollingFile>
 
 		<RollingFile name="RollingFileInfo"
-			fileName="D:/java/BlogLogs/info.log"
-			filePattern="D:/java/BlogLogs/$${date:yyyy-MM-dd}/info-%d{yyyy-MM-dd}-%i.log">
+			fileName="/home/chovy/blogloginfo.log"
+			filePattern="/home/chovy/bloglog$${date:yyyy-MM-dd}/info-%d{yyyy-MM-dd}-%i.log">
 			<Filters>
 				<ThresholdFilter level="INFO" />
 				<ThresholdFilter level="WARN" onMatch="DENY"
@@ -47,8 +47,8 @@
 		</RollingFile>
 
 		<RollingFile name="RollingFileWarn"
-			fileName="D:/java/BlogLogs/warn.log"
-			filePattern="D:/java/BlogLogs/$${date:yyyy-MM}/warn-%d{yyyy-MM-dd}-%i.log">
+			fileName="/home/chovy/bloglogwarn.log"
+			filePattern="/home/chovy/bloglog$${date:yyyy-MM}/warn-%d{yyyy-MM-dd}-%i.log">
 			<Filters>
 				<ThresholdFilter level="WARN" />
 				<ThresholdFilter level="ERROR" onMatch="DENY"
@@ -65,8 +65,8 @@
 		</RollingFile>
 
 		<RollingFile name="RollingFileError"
-			fileName="D:/java/BlogLogs/error.log"
-			filePattern="D:/java/BlogLogs/$${date:yyyy-MM}/error-%d{yyyy-MM-dd}-%i.log">
+			fileName="/home/chovy/bloglogerror.log"
+			filePattern="/home/chovy/bloglog$${date:yyyy-MM}/error-%d{yyyy-MM-dd}-%i.log">
 			<Filters>
 				<ThresholdFilter level="ERROR" />
 				<ThresholdFilter level="FATAL" onMatch="DENY"
